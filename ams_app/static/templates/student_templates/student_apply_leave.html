@@ -1,0 +1,99 @@
+{% extends 'student_templates/base_template.html' %}
+
+{% block main_content %}
+<div class="main-container">
+	<div class="pd-ltr-20">
+        <div class="title pb-20">
+            <h2 class="h3 mb-0">Leave Report and Apply for Leave</h2>
+        </div>
+        
+		<div class="pd-20 card-box mb-30">
+			<div class="clearfix">
+				<div class="pull-left">
+					<h3 class="text-blue h4"> Apply For Leave</h3>
+					<br>
+				</div>
+			</div>
+            <form action="{% url 'student_apply_leave_save' %}" method="post">
+                   <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Leave Date </label>
+                       {% csrf_token %}
+                       <div class="col-sm-12 col-md-10">
+                         <input type="date" name="leave_date" class="form-control" placeholder="Leave Date">
+                       </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Leave Reason</label>
+                    <div class="col-sm-12 col-md-10">
+                          <textarea class="form-control" rows="6" name="leave_msg"></textarea>
+                   </div>
+                  </div>
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label"> </label>
+                    <div class="col-sm-12 col-md-10">
+                    <button type="submit" class="btn btn-primary btn-block" id="fetch_student">Apply for Leave</button>
+                      </div>
+                </div>
+                   <div class="form-group ">
+                      {% if messages %}
+                        {% for message in messages %}
+                        {% if message.tags == 'error' %}
+                        <div class="alert alert-danger" style="margin-top:10px">{{ message }}</div>
+                        {% endif %}
+                        {% if message.tags == 'success' %}
+                        <div class="alert alert-success" style="margin-top:10px">{{ message }}</div>
+                        {% endif %}
+                        {% endfor %}
+                      {% endif %}
+                    </div>
+
+                </div>
+                <!-- /.card-body -->                
+               </form>
+    
+
+            <!-- /.card -->
+            <div class="pd-ltr-20">
+                <div class="pd-20 card-box mb-30">
+                    <div class="clearfix">
+                        <div class="pull-left">
+                            <h3 class="text-blue h4">Leave Apply History</h3>
+                            <br>
+                        </div>
+                    </div>
+               <div class="table">
+               <table class="data-table table stripe hover nowrap">
+                   <tr>
+                       <th>ID</th>
+                       <th>Leave Date</th>
+                       <th>Leave Message</th>
+                       <th>Leave Status</th>
+                   </tr>
+                   {% for row in leave_data %}
+                        <tr>
+                            <td>{{ row.id }}</td>
+                            <td>{{ row.leave_date }}</td>
+                            <td>{{ row.leave_message }}</td>
+                            <td>
+                                {% if row.leave_status == 1 %}
+                                    <span class="alert alert-success">Approved</span>
+                                {% elif row.leave_status == 2 %}
+                                    <span class="alert alert-danger">Rejected</span>
+                                {% else %}
+                                    <span class="alert alert-info">Pending</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                   {% endfor %}
+               </table>
+               </div>
+            </div>
+
+
+
+          </div>
+          </div>
+      </div>
+    
+    <!-- /.content -->
+{% endblock main_content %}

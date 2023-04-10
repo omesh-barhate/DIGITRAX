@@ -1,0 +1,73 @@
+{% extends 'student_templates/base_template.html' %}
+{% block main_content %}
+
+<div class="main-container">
+    <div class="pd-ltr-20">
+        <div class="pd-20 card-box mb-30">
+            <div class="clearfix">
+                <div class="pull-left">
+                    <h3 class="text-blue h4">View Attendance</h3>
+                    <br>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label>Subject </label>
+                    <select class="form-control" name="subject" id="subject">
+                        {% for subject in subjects %}
+                          <option value="{{ subject.id }}">{{ subject.subject_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Date </label>
+                    <input class="form-control date-picker" placeholder="Select Date" name="date" id="date" type="text">
+                </div>
+                <button class="btn btn-primary" id="view-attendance-btn">View Attendance</button>
+            </div>
+    <div class="pd-ltr-20" id="attendance-table-container"></div>
+</div>
+</div>
+</div>
+{% block custom_js %}
+<script>
+   $(document).ready(function() {
+    $('#view-attendance-btn').click(function() {
+        var subjectId = $('#subject').val();
+        var date = $('#date').val();
+        $.ajax({
+            url: 'student_attendance_report',
+            data: {
+                'subject_id': subjectId,
+                'date': date
+            },
+            dataType: 'json',
+            success: function(response) {
+            
+                if (response.attendance_data.length > 0) {
+                    // Create attendance table using the response data
+                    var attendance_table_html = '<table><thead><tr><th>Student Name</th><th>Status</th></tr></thead><tbody>';
+                    for (var i = 0; i < response.attendance_data.length; i++) {
+                        var attendance = response.attendance_data[i];
+                        attendance_table_html += '</td><td>' + attendance.student_name + '</td><td>' + attendance.status + '</td></tr>';
+                    }
+                    attendance_table_html += '</tbody></table>';
+                    // Display attendance table
+                    $('#attendance-table-container').html(attendance_table_html);
+                    $('#attendance-table-container').addClass('table table-bordered');
+                } else {
+                    // Display message when there is no attendance data
+                    $('#attendance-table-container').html('<div class="alert alert-danger" style="margin-top:10px"><p>No Attendance Data found.</p></div>');
+                }
+            
+            },
+            error: function(xhr, status, error) {
+                console.error(error);
+            }
+        });
+    });
+});
+
+</script>
+{% endblock custom_js %}
+{% endblock main_content %}

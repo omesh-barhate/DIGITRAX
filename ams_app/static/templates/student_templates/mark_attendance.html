@@ -1,0 +1,71 @@
+{% extends 'student_templates/base_template.html' %}
+
+{% block main_content %}
+<div class="main-container">
+	<div class="pd-ltr-20">
+		<div class="pd-20 card-box ">
+			<div class="clearfix">
+				<h1 class="text-grey h2">Upload your Attendance</h1>
+				<p class="text-grey h3">Click the button below to scan Barcode:</p>
+				<button id="run_script" type ="button" class="btn btn-primary">Scan Barcode</button>
+			</div>
+		
+		<div id="table_div" class="mt-3"></div>
+        <form id="hidden_form" method="post" action="{% url 'submit_attendance' %}" style="display:none;">
+            {% csrf_token %}
+            <input type="hidden"  name="student_id" id="student_id">
+            <input type="hidden" name="barcode" id="barcode">
+            <input type="hidden" name="timestamp" id="timestamp">
+            <input type="hidden" name="day" id="day">
+        </form>
+        <button id="submit_form" class ="btn btn-primary"style="display:none;">Mark Attendance</button>
+        <div class="form-group">
+            {% if messages %}
+              {% for message in messages %}
+              {% if message.tags == 'error' %}
+              <div class="alert alert-danger" style="margin-top:10px">{{ message }}</div>
+              {% endif %}
+              {% if message.tags == 'success' %}
+              <div class="alert alert-success" style="margin-top:10px">{{ message }}</div>
+              {% endif %}
+              {% endfor %}
+            {% endif %}
+          </div>
+	</div>
+    </div>
+</div>
+
+{% block custom_js %}
+<script>
+$(document).ready(function() {
+    $('#run_script').click(function() {
+        $.ajax({
+            type: "POST",
+            url: "{% url 'scan_barcode' %}",
+            data: {
+                csrfmiddlewaretoken: "{{ csrf_token }}"
+            },
+            success: function(data) {
+                $('#table_div').html(data);
+				$('#table_div table').addClass('table table-bordered');
+                var student_id = $('#table_div table tbody tr:eq(0)').find('td:eq(1)').text();
+                var barcode = $('#table_div table tbody tr:eq(1)').find('td:eq(1)').text();
+                var timestamp = $('#table_div table tbody tr:eq(2)').find('td:eq(1)').text();
+                var day = $('#table_div table tbody tr:eq(3)').find('td:eq(1)').text();
+                $('#hidden_form #student_id').val(student_id);
+                $('#hidden_form #barcode').val(barcode);
+                $('#hidden_form #timestamp').val(timestamp);
+                $('#hidden_form #day').val(day);
+                $('#submit_form').show(); 
+            }
+        });
+    });
+    $('#submit_form').click(function() {
+        $('#hidden_form').submit();
+    });
+});
+</script>
+{% endblock custom_js %}
+{% endblock main_content %}
+
+

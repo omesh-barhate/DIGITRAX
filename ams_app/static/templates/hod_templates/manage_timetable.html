@@ -1,0 +1,60 @@
+{% extends 'hod_templates/base_template.html' %}
+
+{% block main_content %}
+<div class="main-container">
+		<div class="pd-20 card-box mb-30">
+			<div class="clearfix">
+				<div class="pull-left">
+					<h3 class="text-blue h4">Manage Timetable</h3>
+					<br>
+				</div>
+			</div>
+		<div class="pb-20">
+			<table class="data-table table stripe hover nowrap">
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>Start Time</th>
+						<th>End Time</th>
+                        <th>Day</th>
+						<th>Subject Name</th>
+                        <th>Action</th>
+					  </tr>
+				</thead>
+				<tbody>
+					{% for timetable in timetable %}
+					  <tr>
+						<td>{{ timetable.lecture_id }}</td>
+						<td>{{ timetable.start_time }}</td>
+						<td>{{ timetable.end_time }}</td>
+						<td>{{ timetable.day }}</td>
+						<td>{{ timetable.subject.subject_name}}</td>
+						<td><a href="/edit_lecture/{{ timetable.lecture_id }}" class="btn btn-success">Edit</a>
+						<a href="/delete_lecture/{{ timetable.lecture_id }}" class="btn btn-danger">Delete</a></td>
+
+					  </tr>
+					{% endfor %}
+					</tbody>
+			</table>
+			<div class="form-group">
+				{% if messages %}
+				  {% for message in messages %}
+				  {% if message.tags == 'error' %}
+				  <div class="alert alert-danger" style="margin-top:10px">{{ message }}</div>
+				  {% endif %}
+				  {% if message.tags == 'success' %}
+				  <div class="alert alert-success" style="margin-top:10px">{{ message }}</div>
+				  {% endif %}
+				  {% endfor %}
+				{% endif %}
+			  </div>
+		</div>
+	</div>
+
+
+</div>
+
+
+<div class="mobile-menu-overlay"></div>
+
+{% endblock main_content %}

@@ -1,0 +1,73 @@
+{% extends 'hod_templates/base_template.html' %}
+
+{% block main_content %}
+<div class="main-container">
+	<div class="pd-ltr-20">
+		<div class="pd-20 card-box mb-30">
+			<div class="clearfix">
+				<div class="pull-left">
+					<h3 class="text-blue h4">Add Lecture</h3>
+					<br>
+				</div>
+			</div>
+			<form action="/add_lecture_save" method="post">
+				{% csrf_token %}
+			<div class="form-group row">
+				<label class="col-sm-12 col-md-2 col-form-label">Start Time</label>
+				<div class="col-sm-12 col-md-10">
+					<input class="form-control" type="time" placeholder="Enter the start time" name="start_time">
+				</div>
+			</div>
+			<div class="form-group row">
+				<label class="col-sm-12 col-md-2 col-form-label">End Time</label>
+				<div class="col-sm-12 col-md-10">
+					<input class="form-control" placeholder="Enter the end time" type="time" name="end_time">
+				</div>
+			</div>
+			<div class="form-group row">
+				<label class="col-sm-12 col-md-2 col-form-label">Day</label>
+				<div class="col-sm-12 col-md-10">
+					<select class="form-control" name="day">
+                        <option>Monday</option>
+                        <option>Tuesday</option>
+                        <option>Wednesday</option>
+                        <option>Thursday</option>
+                        <option>Friday</option>
+						<option>Saturday</option>
+                    </select>
+			</div>
+			</div>
+			<div class="form-group row">
+                <label class="col-sm-12 col-md-2 col-form-label">Subject Name</label>
+                <div class="col-sm-12 col-md-10">
+                <select class="form-control" name="subject_id">
+                    {% for subject in subjects %}
+                      <option value="{{ subject.id }}">{{ subject.subject_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+			</div>
+			<div class="clearfix">
+				<button type="submit" class="btn btn-primary">Add Lecture</button>
+				</div>
+			</form>
+			<div class="form-group">
+				{% if messages %}
+				  {% for message in messages %}
+				  {% if message.tags == 'error' %}
+				  <div class="alert alert-danger" style="margin-top:10px">{{ message }}</div>
+				  {% endif %}
+				  {% if message.tags == 'success' %}
+				  <div class="alert alert-success" style="margin-top:10px">{{ message }}</div>
+				  {% endif %}
+				  {% endfor %}
+				{% endif %}
+			  </div>		
+		</div>
+		</div>
+	</div>
+
+
+<div class="mobile-menu-overlay"></div>
+
+{% endblock main_content %}
